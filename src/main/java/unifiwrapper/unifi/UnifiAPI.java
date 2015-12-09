@@ -54,10 +54,13 @@ public class UnifiAPI extends Connection {
 		JSONArray a = query(UnifiAddresses.ALL_CLIENTS, null);
 		ArrayList<Client> list = new ArrayList<Client>();
 
-		for (int i = 0; i < a.length(); i++)
-			list.add(new Client((JSONObject) a.get(i)));
+		for (int i = 0; i < a.length(); i++) {
+			Client c = new Client((JSONObject) a.get(i));
+			list.add(c);
+		}
 
 		return list;
+
 	}
 
 	public JSONArray unblockClient(String macAddress) {

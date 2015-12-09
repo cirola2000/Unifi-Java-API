@@ -1,5 +1,6 @@
 package unifiwrapper.entities;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -9,7 +10,7 @@ import org.json.JSONObject;
  */
 public class Client {
 	JSONObject o;
-	
+
 	public Client(JSONObject o) {
 		this.o = o;
 	}
@@ -35,23 +36,39 @@ public class Client {
 	}
 
 	public Boolean getIsGuest() {
-		return o.getBoolean("is_guest");
+		try{
+			return o.getBoolean("is_guest");			
+		}
+		catch(JSONException e){
+			return false;
+		}
+		
 	}
 
 	public Boolean getIsWired() {
-		return o.getBoolean("is_wired");
+		try{
+			return o.getBoolean("is_wired");			
+		}
+		catch(JSONException e){
+			return false;
+		}
 	}
-	
+
 	public Boolean getIsBlocked() {
-		return o.getBoolean("blocked");
+		try{
+			return o.getBoolean("blocked");			
+		}
+		catch(JSONException e){
+			return false;
+		}
 	}
 
 	public String getMac() {
-		return  o.getString("mac");
+		return o.getString("mac");
 	}
 
 	public String getOui() {
-		return  o.getString("Oui");
+		return o.getString("Oui");
 	}
 
 	public long getRxBytes() {
@@ -65,17 +82,17 @@ public class Client {
 	public String getSiteId() {
 		return o.getString("site_id");
 	}
-	
+
 	public String getStatId() {
 		return o.getJSONObject("stat").getString("_id");
 	}
 
 	public long getStatBytes() {
-		return  Long.parseLong(o.getJSONObject("stat").getString("bytes"));
+		return Long.parseLong(o.getJSONObject("stat").getString("bytes"));
 	}
 
 	public long getStatDuration() {
-		return  Long.parseLong(o.getJSONObject("stat").getString("duration"));
+		return Long.parseLong(o.getJSONObject("stat").getString("duration"));
 	}
 
 	public String getStatO() {
