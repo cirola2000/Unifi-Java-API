@@ -6,6 +6,24 @@ import java.io.IOException;
 import java.util.HashMap;
 
 public class FileUtils {
+	
+	/**
+	 * 
+	 * Reads a file using a line for alias (starting with #) and a line for the MAC address
+	 *
+	 * File example:
+	 * #Tablet 1
+	 * aa:bb:cc:dd:ee:ff
+	 * #Laptop 2
+	 * aa:bb:cc:dd:ee:ef
+	 * #Ciro's mobile
+	 * aa:bb:cc:dd:ee:df
+	 * #Moleta's laptop
+	 * aa:bb:cc:dd:ee:cf
+	 * 
+	 * @param fileName
+	 * @return hashmap with MAC address and Alias name
+	 */
 
 	public HashMap<String,String> readAllowedMACs(String fileName) {
 		int i =0 ;
@@ -24,7 +42,6 @@ public class FileUtils {
 				lastLine = line;
 			}
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return macs;

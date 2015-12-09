@@ -1,5 +1,6 @@
 package unifiwrapper.unifi;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.json.JSONObject;
 
 import unifiwrapper.entities.Client;
 import unifiwrapper.entities.Device;
+import unifiwrapper.exceptions.NoClientFoundException;
 import unifiwrapper.http.Connection;
 
 /**
@@ -26,14 +28,19 @@ public class UnifiAPI extends Connection {
 		super(host, port, user, password, site);
 	}
 
-	public JSONObject getClient(String macAddress) {
-		return (JSONObject) query(UnifiAddresses.USER_STATS + macAddress, null).get(0);
+	public Client getClient(String macAddress) throws NoClientFoundException {
+
+		try {
+			return new Client((JSONObject) query(UnifiAddresses.USER_STATS + macAddress, null).get(0));
+		} catch (Exception e) {
+			throw new NoClientFoundException("No client found, MAC address: " + macAddress);
+		}
 	}
 
 	public ArrayList<Device> getAllDevices() {
 
 		JSONArray a = query(UnifiAddresses.ALL_DEVICES, null);
-		
+
 		ArrayList<Device> list = new ArrayList<Device>();
 
 		for (int i = 0; i < a.length(); i++)

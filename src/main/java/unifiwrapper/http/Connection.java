@@ -182,7 +182,6 @@ public abstract class Connection {
 			return o.getJSONArray("data");
 
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
