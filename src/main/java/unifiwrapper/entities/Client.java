@@ -19,15 +19,15 @@ public class Client {
 	}
 
 	public long getDuration() {
-		return Long.parseLong(o.getString("duration"));
+		return o.getLong("duration");
 	}
 
 	public long getFirstSeen() {
-		return Long.parseLong(o.getString("first_seen"));
+		return o.getLong("first_seen");
 	}
 
 	public long getLastSeen() {
-		return Long.parseLong(o.getString("last_seen"));
+		return o.getLong("last_seen");
 	}
 
 	public String getHostname() {
@@ -35,11 +35,15 @@ public class Client {
 	}
 
 	public Boolean getIsGuest() {
-		return Boolean.parseBoolean(o.getString("is_guest"));
+		return o.getBoolean("is_guest");
 	}
 
 	public Boolean getIsWired() {
-		return Boolean.parseBoolean(o.getString("is_wired"));
+		return o.getBoolean("is_wired");
+	}
+	
+	public Boolean getIsBlocked() {
+		return o.getBoolean("blocked");
 	}
 
 	public String getMac() {
@@ -51,11 +55,11 @@ public class Client {
 	}
 
 	public long getRxBytes() {
-		return Long.parseLong(o.getString("rx_bytes"));
+		return o.getLong("rx_bytes");
 	}
 
 	public long getTxBytes() {
-		return Long.parseLong(o.getString("tx_bytes"));
+		return o.getLong("tx_bytes");
 	}
 
 	public String getSiteId() {
