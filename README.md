@@ -1,4 +1,4 @@
-# Unifi-Wrapper
+# Unifi-Java-API
 Java wrapper for communication with UNIFI devices.
 
 ##Simple example:
