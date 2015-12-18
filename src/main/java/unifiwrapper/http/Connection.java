@@ -22,40 +22,68 @@ import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import unifiwrapper.unifi.UnifiAddresses;
-
+/**
+ * General class to make an SSL connection excluding the certificate verification
+ * @author Ciro Baron Neto
+ */
 public abstract class Connection {
 
 	final static Logger logger = Logger.getLogger(Connection.class);
 
-	private final String USER_AGENT = "Mozilla/5.0";
+	/**
+	 * Storing cookies
+	 */
+	private static HashMap<String, String> cookies = new HashMap<String, String>();
 
-	private HashMap<String, String> cookies = new HashMap<String, String>();
+	/**
+	 * UNIFI server address and authentication parameters.
+	 */
+	private static String host;
+	private static String user;
+	private static String password;
+	private static int port;
 
-	String host;
-	String user;
-	String password;
-	int port;
-
+	public Connection() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * Constructor with the desired parameters of the HTTP connection (default UNIFI site name)
+	 * @param host
+	 * @param port
+	 * @param user
+	 * @param password
+	 */
 	public Connection(String host, int port, String user, String password) {
 		this.host = host;
 		this.user = user;
 		this.port = port;
 		this.password = password;
 	}
-
+	
+	/**
+	 * Constructor with the desired parameters of the HTTP connection and a UNIFI site name
+	 * @param host
+	 * @param port
+	 * @param user
+	 * @param password
+	 */
 	public Connection(String host, int port, String user, String password, String siteName) {
 		this.host = host;
 		this.user = user;
 		this.port = port;
 		this.password = password;
-
+		
 		logger.debug("New site added: " + siteName);
 		UnifiAddresses.SITE_NAME = siteName;
 	}
 
-	public HttpsURLConnection con = null;
+	private HttpsURLConnection connection = null;
 
+	/**
+	 * Make the connection to UNIFI server!
+	 * @throws Exception
+	 */
 	public void connect() throws Exception {
 
 		// Create a trust manager that does not validate certificate chains
@@ -89,39 +117,40 @@ public abstract class Connection {
 
 		URL url;
 
+		// making the URL
 		String urlAddress = "https://" + host + ":" + port + UnifiAddresses.LOGIN;
 
 		logger.debug("Connecting to: " + urlAddress);
-
 		url = new URL(urlAddress);
 
-		con = (HttpsURLConnection) url.openConnection();
+		connection = (HttpsURLConnection) url.openConnection();
 
-		con.setRequestMethod("POST");
-
+		// setting some headers and the post body
 		String query = "{\"username\":\"" + user + "\",\"password\":\"" + password + "\"}:";
+		connection.setRequestMethod("POST");
+		connection.setRequestProperty("Content-length", String.valueOf(query.length()));
+		connection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+		connection.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0;Windows98;DigExt)");
+		connection.setDoOutput(true);
+		connection.setDoInput(true);
 
-		con.setRequestProperty("Content-length", String.valueOf(query.length()));
-		con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-		con.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0;Windows98;DigExt)");
-		con.setDoOutput(true);
-		con.setDoInput(true);
-
-		DataOutputStream output = new DataOutputStream(con.getOutputStream());
+		DataOutputStream output = new DataOutputStream(connection.getOutputStream());
 		output.writeBytes(query);
 		output.close();
 
-		BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+		BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 
 		createCookies();
-
 	}
 
+	/**
+	 * Save all cookies received by the server.
+	 */
 	private void createCookies() {
 		String headerName;
-		for (int i = 1; (headerName = con.getHeaderFieldKey(i)) != null; i++) {
+		for (int i = 1; (headerName = connection.getHeaderFieldKey(i)) != null; i++) {
 			if (headerName.equals("Set-Cookie")) {
-				String cookie = con.getHeaderField(i);
+				String cookie = connection.getHeaderField(i);
 				logger.debug("cookie: " + cookie);
 
 				cookie = cookie.substring(0, cookie.indexOf(";"));
@@ -132,22 +161,30 @@ public abstract class Connection {
 			}
 		}
 	}
-
+	
+	/**
+	 * Make a request to the server. 
+	 * @param url the server URL
+	 * @param query null for a GET request, and a JSONobject to create a POST
+	 * @return
+	 */
 	public JSONArray query(String url, JSONObject query) {
 		JSONObject o = new JSONObject();
 
 		try {
 			URL myUrl = new URL("https://" + host + ":" + port + url);
 
-			logger.debug("Running command: " + myUrl.toString());
+			logger.debug("Running request: " + myUrl.toString());
 
 			HttpsURLConnection urlConn = (HttpsURLConnection) myUrl.openConnection();
 
+			// check whether is a GET or POST method
 			if (query != null) {
 				urlConn.setRequestMethod("POST");
 				urlConn.setRequestProperty("Content-length", String.valueOf(query.toString().length()));
 			}
 
+			// retrieve the cookies!
 			String cookieStr = "";
 			for (String cookie : cookies.keySet()) {
 				cookieStr = cookieStr + cookie + "=" + cookies.get(cookie).toString() + "; ";

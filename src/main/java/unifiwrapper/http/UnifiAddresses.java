@@ -1,5 +1,11 @@
-package unifiwrapper.unifi;
+package unifiwrapper.http;
 
+/**
+ * List of request URL used to communicate to the UNIFI controller.
+ * 
+ * @author Ciro Baron Neto
+ *
+ */
 public class UnifiAddresses {
 
 	public static String API = "/api";
@@ -20,6 +26,10 @@ public class UnifiAddresses {
 
 	public static String ALL_DEVICES = API_CALL + STAT + "/device/";
 
+	public static String ALL_ACTIVE_CLIENTS = API_CALL + STAT + "/alluser/";
+	
+	public static String ALL_CLIENTS_LAST_TIME = API_CALL + STAT + "/alluser/";
+	
 	public static String ALL_CLIENTS = API_CALL + LIST + "/user/";
 
 	public static String ALL_GROUPS = API_CALL + LIST + "/usergroup/";
