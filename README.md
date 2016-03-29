@@ -1,8 +1,8 @@
-# Unifi-Java-API
-Java wrapper for communication with UNIFI devices.
+# Unifi Java API
+Java API for communication with Ubiquiti UniFi devices.
 
 ##Simple example:
-The following example creates a new connection to the UNIFI controller, retrieve a list of users connected in the last hour and all devices.
+The following example creates a new connection to the UniFi controller and retrieves a list of users and all devices connected in the last hour.
 
 ```
 	public static void list() {
@@ -19,7 +19,7 @@ The following example creates a new connection to the UNIFI controller, retrieve
 				System.out.println((i++) + " " + client.getHostname());
 			}
 
-      // printing all devices IP
+      			// printing all devices IP
 			ArrayList<Device> listDevices = unifi.getDevices().getAllDevices();
 			for (Device device : listDevices) {
 				System.out.println(device.getNetworkConfiguration().getIp());
