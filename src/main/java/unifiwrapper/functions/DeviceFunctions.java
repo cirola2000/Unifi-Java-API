@@ -1,11 +1,16 @@
 package unifiwrapper.functions;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
-import unifiwrapper.entities.Device;
+import unifiwrapper.devices.accesspoint.UnifiAP;
+import unifiwrapper.devices.accesspoint.UnifiAccessPoint;
+import unifiwrapper.devices.accesspoint.UnifiAccessPointFactory;
+import unifiwrapper.exceptions.NoAccessPointModelFoundException;
 import unifiwrapper.http.Connection;
 import unifiwrapper.http.UnifiAddresses;
 
@@ -20,15 +25,18 @@ public class DeviceFunctions extends Connection {
 	/**
 	 * Get all UNIFI devices 
 	 * @return
+	 * @throws NoAccessPointModelFoundException 
+	 * @throws JSONException 
 	 */
-	public ArrayList<Device> getAllDevices() {
+	public List<UnifiAccessPoint> getAllDevices() throws JSONException, NoAccessPointModelFoundException {
 
 		JSONArray a = query(UnifiAddresses.ALL_DEVICES, null);
 
-		ArrayList<Device> list = new ArrayList<Device>();
+		List<UnifiAccessPoint> list = new ArrayList<>();
 
 		for (int i = 0; i < a.length(); i++)
-			list.add(new Device((JSONObject) a.get(i)));
+//			list.add(new UnifiAP((JSONObject) a.get(i)));
+			list.add(UnifiAccessPointFactory.createAccessPoint((JSONObject) a.get(i)));
 
 		return list;
 

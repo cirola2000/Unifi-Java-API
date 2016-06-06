@@ -2,14 +2,16 @@ package unifiwrapper.functions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import unifiwrapper.entities.Client;
+import unifiwrapper.client.Client;
+import unifiwrapper.devices.ClientDevice;
+import unifiwrapper.devices.ClientDeviceFactory;
 import unifiwrapper.exceptions.NoClientFoundException;
 import unifiwrapper.http.Connection;
-import unifiwrapper.http.UnifiAPI;
 import unifiwrapper.http.UnifiAddresses;
 
 /**
@@ -27,9 +29,9 @@ public class ClientFunctions extends Connection {
 	 * @return
 	 * @throws NoClientFoundException
 	 */
-	public Client getClient(String macAddress) throws NoClientFoundException {
+	public ClientDevice getClient(String macAddress) throws NoClientFoundException {
 		try {
-			return new Client((JSONObject) query(UnifiAddresses.USER_STATS + macAddress, null).get(0));
+			return ClientDeviceFactory.createClientDevice((JSONObject) query(UnifiAddresses.USER_STATS + macAddress, null).get(0));
 		} catch (Exception e) {
 			throw new NoClientFoundException("No client found, MAC address: " + macAddress);
 		}
@@ -39,12 +41,12 @@ public class ClientFunctions extends Connection {
 	 * Get all clients
 	 * @return
 	 */
-	public ArrayList<Client> getAllClients() {
+	public List<ClientDevice> getAllClients() {
 		JSONArray a = query(UnifiAddresses.ALL_CLIENTS, null);
-		ArrayList<Client> list = new ArrayList<Client>();
+		List<ClientDevice> list = new ArrayList<>();
 
 		for (int i = 0; i < a.length(); i++) {
-			Client c = new Client((JSONObject) a.get(i));
+			ClientDevice c = ClientDeviceFactory.createClientDevice((JSONObject) a.get(i));
 			list.add(c);
 		}
 		return list;
@@ -55,12 +57,12 @@ public class ClientFunctions extends Connection {
 	 * Get all active clients
 	 * @return
 	 */
-	public ArrayList<Client> getAllActiveClients() {
+	public List<ClientDevice> getAllActiveClients() {
 		JSONArray a = query(UnifiAddresses.ALL_ACTIVE_CLIENTS, null);
-		ArrayList<Client> list = new ArrayList<Client>();
+		List<ClientDevice> list = new ArrayList<>();
 		
 		for (int i = 0; i < a.length(); i++) {
-			Client c = new Client((JSONObject) a.get(i));
+			ClientDevice c = ClientDeviceFactory.createClientDevice((JSONObject) a.get(i));
 			list.add(c);
 		}
 		return list;
@@ -71,7 +73,7 @@ public class ClientFunctions extends Connection {
 	 * @param numberOfHours number of hours
 	 * @return
 	 */
-	public ArrayList<Client> getAllClientsNh(int numberOfHours) {
+	public List<ClientDevice> getAllClientsNh(int numberOfHours) {
 		
 		HashMap<String, String> cmds = new HashMap<String, String>();
 		cmds.put("type", "all");
@@ -79,10 +81,10 @@ public class ClientFunctions extends Connection {
 		cmds.put("within", String.valueOf(numberOfHours));
 
 		JSONArray a = query(UnifiAddresses.ALL_CLIENTS_LAST_TIME, makeCMD(cmds));
-		ArrayList<Client> list = new ArrayList<Client>();
+		List<ClientDevice> list = new ArrayList<>();
 		
 		for (int i = 0; i < a.length(); i++) {
-			Client c = new Client((JSONObject) a.get(i));
+			ClientDevice c = ClientDeviceFactory.createClientDevice((JSONObject) a.get(i));
 			list.add(c);
 		}
 		return list;

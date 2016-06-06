@@ -1,11 +1,16 @@
-package unifiwrapper.entities;
+package unifiwrapper.devices.accesspoint;
 
 import org.json.JSONObject;
 
-public class Device {
-	JSONObject o;
+import unifiwrapper.devices.Network;
+import unifiwrapper.devices.Radio;
+import unifiwrapper.devices.UnifiDevice;
+import unifiwrapper.devices.UnifiDeviceType;
 
-	public Device(JSONObject o) {
+public abstract class UnifiAP implements UnifiAccessPoint, UnifiDevice{
+	public JSONObject o;
+
+	public UnifiAP(JSONObject o) {
 		this.o = o;
 
 		if (!o.get("radio_na").toString().equals("null"))
@@ -63,7 +68,26 @@ public class Device {
 
 	public Network getNetworkConfiguration() {
 		return network;
+	}
+
+	public String getCFGVersion() {
+		return o.getString("cfgversion");
+	}
+
+	public String getInformIP() {
+		return o.getString("inform_ip");
+	}
+
+	public String getInformURL() {
+		return o.getString("inform_url");
+	}	
+
+	public String getUpTime() {
+		return o.getString("_uptime");
 	}	
 	
+	public UnifiDeviceType getUnifiDeviceType() {
+		return UnifiDeviceType.UAP;
+	}
 
 }

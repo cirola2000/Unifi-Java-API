@@ -1,8 +1,14 @@
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
 
-import unifiwrapper.entities.Client;
-import unifiwrapper.entities.Device;
-import unifiwrapper.unifi.UnifiAPI;
+import unifiwrapper.client.Client;
+import unifiwrapper.devices.ClientDevice;
+import unifiwrapper.devices.accesspoint.UnifiAP;
+import unifiwrapper.devices.accesspoint.UnifiAccessPoint;
+import unifiwrapper.http.UnifiAPI;
 
 public class Main {
 
@@ -14,21 +20,30 @@ public class Main {
 		UnifiAPI unifi = new UnifiAPI("10.40.0.3", 8443, "admin", "");
 		try {
 			unifi.connect();
-			ArrayList<Client> listClients = unifi.getAllClients();
 
-			for (Client client : listClients) {
-				System.out.println(client.getMac());
-			}
+			// listing all clients within last 24h
+			List<ClientDevice> clients = unifi.getClients().getAllClientsNh(24);
 
-			ArrayList<Device> listDevices = unifi.getAllDevices();
-			for (Device device : listDevices) {
-				System.out.println(device.getNetworkConfiguration().getIp());
+			Date date = new Date();
+			
+			List<UnifiAccessPoint> devices = unifi.getDevices().getAllDevices();
+//			
+			System.out.println(devices.iterator().next().getCFGVersion());
+			
+			Collections.sort(clients, new Comparator<ClientDevice>(){
+				public int compare(ClientDevice a, ClientDevice b){
+					return a.getClientDeviceType().toString().compareToIgnoreCase(b.getClientDeviceType().toString());
+				}
+			});
+			
+			
+			for (ClientDevice client : clients) {
+				System.out.println(client.getClientDeviceType());
 			}
 
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 
 }

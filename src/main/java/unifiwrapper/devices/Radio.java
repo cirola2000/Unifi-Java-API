@@ -1,4 +1,4 @@
-package unifiwrapper.entities;
+package unifiwrapper.devices;
 
 import org.json.JSONObject;
 

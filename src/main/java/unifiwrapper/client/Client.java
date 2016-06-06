@@ -1,14 +1,16 @@
-package unifiwrapper.entities;
+package unifiwrapper.client;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import unifiwrapper.devices.ClientDevice;
 
 /**
  * 
  * @author Ciro Baron Neto
  *
  */
-public class Client {
+public abstract class Client implements ClientDevice{
 	JSONObject o;
 
 	public Client(JSONObject o) {
