@@ -1,5 +1,6 @@
 package unifiwrapper.devices.accesspoint;
 
+import unifiwrapper.devices.Network;
 import unifiwrapper.devices.Radio;
 
 public interface UnifiAccessPoint {
@@ -29,5 +30,7 @@ public interface UnifiAccessPoint {
 	public String getInformURL();
 
 	public UnifiAccessPointType getAccessPointType();
+	
+	public Network getNetworkConfiguration();
 
 }

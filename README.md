@@ -12,16 +12,16 @@ The following example creates a new connection to the UniFi controller and retri
 			unifi.connect();
 			
 			// printing all client hostnames connected in the last hour
-			ArrayList<Client> listClients = unifi.getClients().getAllClientsNh(1);
+			List<ClientDevice> listClients = unifi.getClients().getAllClientsNh(1);
 
 			int i = 0;
-			for (Client client : listClients) {
+			for (ClientDevice client : listClients) {
 				System.out.println((i++) + " " + client.getHostname());
 			}
 
       			// printing all devices IP
-			ArrayList<Device> listDevices = unifi.getDevices().getAllDevices();
-			for (Device device : listDevices) {
+			List<UnifiAccessPoint> listDevices = unifi.getDevices().getAllDevices();
+			for (UnifiAccessPoint device : listDevices) {
 				System.out.println(device.getNetworkConfiguration().getIp());
 			}
 
